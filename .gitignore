@@ -25,3 +25,9 @@ __pycache__/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Ignore external tools
+cvat/
+labelImg/
+
+*.xml
