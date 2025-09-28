@@ -4,7 +4,10 @@ from ultralytics import YOLO
 # Load a bigger model for better accuracy (GPU can handle it)
 model = YOLO("yolov8m.pt")   # try yolov8m.pt or yolov8l.pt
 
-cap = cv2.VideoCapture("match.mp4")  # your football video
+cap = cv2.VideoCapture("ManCityTrim1.mp4")  # your football video
+
+# Only allow detections of players and the ball
+allowed_classes = ["person", "sports ball"]
 
 frame_id = 0
 while True:
@@ -17,15 +20,21 @@ while True:
         continue
 
     # Run detection on GPU (device=0)
-    results = model.predict(frame, imgsz=1920, conf=0.25, device=0, verbose=False)
+    results = model.predict(frame, imgsz=1280, conf=0.25, device=0, verbose=False)
 
-    # Draw boxes
+    # Draw boxes only for allowed classes
     for box in results[0].boxes:
-        x1, y1, x2, y2 = map(int, box.xyxy[0])
         cls = int(box.cls[0])
+        label = model.names[cls]
+
+        if label not in allowed_classes:
+            continue  # skip unwanted detections
+
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
         conf = float(box.conf[0])
+
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        cv2.putText(frame, f"{model.names[cls]} {conf:.2f}", (x1, y1 - 5),
+        cv2.putText(frame, f"{label} {conf:.2f}", (x1, y1 - 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
     cv2.imshow("Football Detection (GPU)", frame)

@@ -1,2 +1,27 @@
-match.mp4
-match2.mp4
+# Ignore external tools
+cvat/
+labelImg/
+
+# Ignore datasets
+dataset/
+videos/
+runs/
+
+# Ignore large files
+*.pt
+*.mp4
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+
+# Python stuff
+.venv/
+__pycache__/
+*.pyc
+
+# IDE stuff
+.vscode/
+.DS_Store
+Thumbs.db
